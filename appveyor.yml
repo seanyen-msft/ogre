@@ -2,6 +2,10 @@ platform: x64
 configuration: Release
 image: Visual Studio 2017
 
+install:
+ - ps: Start-FileDownload 'https://astuteinternet.dl.sourceforge.net/project/boost/boost-binaries/1.66.0/boost_1_66_0-msvc-14.1-64.exe'
+ - boost_1_66_0-msvc-14.1-64.exe" /DIR="ogredeps" /VERYSILENT
+
 build_script:
  - call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars64.bat"
  - cmake -P ci-build.cmake
