@@ -38,7 +38,7 @@ endif()
 
 if(DEFINED ENV{APPVEYOR})
     set(CMAKE_BUILD_TYPE RelWithDebInfo)
-    set(GENERATOR -G "Visual Studio 15")
+    set(GENERATOR -G "Ninja")
     set(RENDERSYSTEMS
         -DOGRE_BUILD_RENDERSYSTEM_D3D9=FALSE
         -DOGRE_BUILD_RENDERSYSTEM_GL=TRUE
