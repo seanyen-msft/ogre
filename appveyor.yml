@@ -4,7 +4,7 @@ image: Visual Studio 2017
 
 build_script:
  - cmake -P ci-build.cmake
- - cmake --build . --target INSTALL
+ - cmake --build . --config RelWithDebInfo --target INSTALL
 cache:
 - ogredeps -> CMake/Dependencies.cmake
 branches:
