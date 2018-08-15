@@ -37,7 +37,7 @@ elseif("$ENV{TRAVIS_OS_NAME}" STREQUAL "osx")
 endif()
 
 if(DEFINED ENV{APPVEYOR})
-    set(CMAKE_BUILD_TYPE Release)
+    set(CMAKE_BUILD_TYPE RelWithDebInfo)
     set(GENERATOR -G "Visual Studio 15")
     set(RENDERSYSTEMS
         -DOGRE_BUILD_RENDERSYSTEM_D3D9=FALSE
