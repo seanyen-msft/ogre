@@ -6,7 +6,7 @@ build_script:
  - cmake -P ci-build.cmake
  - cmake --build . --config RelWithDebInfo --target INSTALL
 cache:
-- ogredeps -> CMake/Dependencies.cmake
+#- ogredeps -> CMake/Dependencies.cmake
 branches:
   only:
     - seanyen_working
