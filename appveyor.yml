@@ -9,7 +9,7 @@ install:
  - nuget install ANGLE.WindowsStore -OutputDirectory ..\Temp
  - mkdir ..\ANGLE
  - xcopy /s /i ..\Temp\ANGLE.WindowsStore.2.1.14\Include ..\ANGLE\includes
- - xcopy /s /i ..\Temp\ANGLE.WindowsStore.2.1.14\bin\UAP\x64\ ..\ANGLE\lib
+ - xcopy /s /i ..\Temp\ANGLE.WindowsStore.2.1.14\bin\UAP\x64 ..\ANGLE\lib
  - dir /s /b ..\ANGLE\
 
 build_script:
