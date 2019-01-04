@@ -5,15 +5,16 @@ image: Visual Studio 2017
 install:
  - ps: Start-FileDownload 'https://astuteinternet.dl.sourceforge.net/project/boost/boost-binaries/1.66.0/boost_1_66_0-msvc-14.1-64.exe'
  - boost_1_66_0-msvc-14.1-64.exe /DIR="..\Dependencies" /VERYSILENT
+ - mkdir ..\Temp
+ - nuget install ANGLE.WindowsStore -OutputDirectory ..\Temp
  - mkdir ..\ANGLE
- - nuget install ANGLE.WindowsStore -OutputDirectory ..\ANGLE
- - xcopy /s ..\ANGLE\ANGLE.WindowsStore.2.1.14\Include ..\Dependencies\includes
- - xcopy /s ..\ANGLE\ANGLE.WindowsStore.2.1.14\bin\UAP\x64\ ..\Dependencies\lib
- - dir /s /b ..\Dependencies\
+ - xcopy /s /i ..\Temp\ANGLE.WindowsStore.2.1.14\Include ..\ANGLE\includes
+ - xcopy /s /i ..\Temp\ANGLE.WindowsStore.2.1.14\bin\UAP\x64\ ..\ANGLE\lib
+ - dir /s /b ..\ANGLE\
 
 build_script:
  - call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars64.bat"
- - cmake -P ci-build.cmake
+ - cmake -P ci-build.cmake -DCMAKE_PREFIX_PATH=C:/projects/ANGLE
  - cmake --build . --config RelWithDebInfo --target INSTALL
 cache:
 #- ogredeps -> CMake/Dependencies.cmake
