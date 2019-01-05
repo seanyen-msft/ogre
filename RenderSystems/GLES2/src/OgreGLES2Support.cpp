@@ -36,16 +36,18 @@ namespace Ogre {
         String tmpStr;
 #if 1
         // Set version string
-        const GLubyte* pcVer = glGetString(GL_VERSION);
-        assert(pcVer && "Problems getting GL version string using glGetString");
-        tmpStr = (const char*)pcVer;
+        //const GLubyte* pcVer = glGetString(GL_VERSION);
+        //assert(pcVer && "Problems getting GL version string using glGetString");
+        //tmpStr = (const char*)pcVer;
 
         // format explained here:
         // https://www.khronos.org/opengles/sdk/docs/man/xhtml/glGetString.xml
-        size_t offset = sizeof("OpenGL ES ") - 1;
-        if(tmpStr.length() > offset) {
-            mVersion.fromString(tmpStr.substr(offset, tmpStr.find(" ", offset)));
-        }
+        //size_t offset = sizeof("OpenGL ES ") - 1;
+        //if(tmpStr.length() > offset) {
+        //    mVersion.fromString(tmpStr.substr(offset, tmpStr.find(" ", offset)));
+        //}
+        mVersion.major = 2;
+        mVersion.minor = 0;
 #else
         // GLES3 way, but should work with ES2 as well, so disabled for now
         glGetIntegerv(GL_MAJOR_VERSION, &mVersion.major);
