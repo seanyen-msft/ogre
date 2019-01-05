@@ -126,8 +126,11 @@ static int parse_version(void)
     if (!glGetString)
         return -1;
 
-    const char* pcVer = (const char*)glGetString(GL_VERSION);
-    sscanf(pcVer, "OpenGL ES %u.%u", &version.major, &version.minor);
+    version.major = 2;
+    version.minor = 0;
+
+    //const char* pcVer = (const char*)glGetString(GL_VERSION);
+    //sscanf(pcVer, "OpenGL ES %u.%u", &version.major, &version.minor);
 
     if (version.major < 2)
         return -1;
