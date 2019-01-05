@@ -8,13 +8,14 @@ install:
  - mkdir ..\Temp
  - nuget install ANGLE.WindowsStore -OutputDirectory ..\Temp
  - mkdir ..\ANGLE
- - xcopy /s /i ..\Temp\ANGLE.WindowsStore.2.1.14\Include ..\ANGLE\includes
- - xcopy /s /i ..\Temp\ANGLE.WindowsStore.2.1.14\bin\UAP\x64 ..\ANGLE\lib
- - dir /s /b ..\ANGLE\
+ - xcopy /s /i ..\Temp\ANGLE.WindowsStore.2.1.14\Include .\ogredeps\include
+ - xcopy /s /i ..\Temp\ANGLE.WindowsStore.2.1.14\bin\UAP\x64\*.lib .\ogredeps\lib
+ - xcopy /s /i ..\Temp\ANGLE.WindowsStore.2.1.14\bin\UAP\x64\*.dll .\ogredeps\bin
+ - dir /s /b .\ogredeps
 
 build_script:
  - call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars64.bat"
- - cmake -P ci-build.cmake -DCMAKE_PREFIX_PATH=C:/projects/ANGLE
+ - cmake -P ci-build.cmake
  - cmake --build . --config RelWithDebInfo --target INSTALL
 cache:
 #- ogredeps -> CMake/Dependencies.cmake
