@@ -193,7 +193,7 @@ namespace Ogre {
         // check with the high level program manager to see if it was loaded
         HighLevelGpuProgramPtr hlProgram = HighLevelGpuProgramManager::getSingleton().getByName(
             name, ResourceGroupManager::AUTODETECT_RESOURCE_GROUP_NAME);
-        if (hlProgram && hlProgram->getSyntaxCode() == "glsl")
+        if (hlProgram && (hlProgram->getSyntaxCode() == "glsl" || hlProgram->getSyntaxCode() == "glsles"))
         {
             // make sure attached program source gets loaded and compiled
             // don't need a low level implementation for attached shader objects

@@ -41,6 +41,8 @@ THE SOFTWARE.
 #include <algorithm>
 #include <climits>
 
+#include <egl\eglext.h>
+
 namespace Ogre {
     EGLWindow::EGLWindow(EGLSupport *glsupport)
         : mGLSupport(glsupport),
@@ -210,6 +212,13 @@ namespace Ogre {
                                                     NativeWindowType win)
     {
         ::EGLSurface surface;
+
+        int minAttribs[] = {
+                EGL_FIXED_SIZE_ANGLE, EGL_TRUE,
+                EGL_HEIGHT, mHeight,
+                EGL_WIDTH, mWidth,
+                EGL_NONE
+            };
 
         surface = eglCreateWindowSurface(display, mEglConfig, (EGLNativeWindowType)win, NULL);
         EGL_CHECK_ERROR

@@ -45,6 +45,8 @@ namespace Ogre {
         virtual void windowMovedOrResized();
         virtual void switchFullScreen(bool fullscreen);
 
+        int mEglConfigId;
+
     public:
         Win32EGLWindow(Win32EGLSupport* glsupport);
         void create(const String& name, unsigned int width, unsigned int height,

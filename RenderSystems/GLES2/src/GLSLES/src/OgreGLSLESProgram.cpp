@@ -65,6 +65,10 @@ namespace Ogre {
             dict->addParameter(ParameterDef("preprocessor_defines", 
                                             "Preprocessor defines use to compile the program.",
                                             PT_STRING),&msCmdPreprocessorDefines);
+            dict->addParameter(ParameterDef(
+                "attach",
+                "name of another GLSL program needed by this program",
+                PT_STRING), &msCmdAttach);
 #if !OGRE_NO_GLES2_GLSL_OPTIMISER
             dict->addParameter(ParameterDef("use_optimiser", 
                                             "Should the GLSL optimiser be used. Default is false.",
@@ -255,6 +259,16 @@ namespace Ogre {
         // Therefore instead, parse the source code manually and extract the uniforms
         createParameterMappingStructures(true);
         GLSLESProgramManager::getSingleton().extractUniformsFromGLSL(mSource, *mConstantDefs, mName);
+
+        // Also parse any attached sources.
+        for (GLSLProgramContainer::const_iterator i = mAttachedGLSLPrograms.begin();
+             i != mAttachedGLSLPrograms.end(); ++i)
+        {
+            GLSLShaderCommon* childShader = *i;
+
+            GLSLESProgramManager::getSingleton().extractUniformsFromGLSL(
+                childShader->getSource(), *mConstantDefs, childShader->getName());
+        }
     }
 
     //-----------------------------------------------------------------------

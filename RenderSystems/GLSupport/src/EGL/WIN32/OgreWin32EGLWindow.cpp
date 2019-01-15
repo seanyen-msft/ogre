@@ -57,33 +57,31 @@ namespace Ogre {
 
     void Win32EGLWindow::initNativeCreatedWindow(const NameValuePairList *miscParams)
     {
-
     }
 
     void Win32EGLWindow::createNativeWindow( int &left, int &top, uint &width, uint &height, String &title )
     {
         // destroy current window, if any
-        if (mWindow)
-            destroy();
-
-		HINSTANCE hInst = NULL;
-		static const TCHAR staticVar;
-		GetModuleHandleEx(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS | GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT, &staticVar, &hInst);
-
-        mWindow = 0;
-        mClosed = false;        
-        mColourDepth = mIsFullScreen? 32 : GetDeviceCaps(GetDC(0), BITSPIXEL);
-        HWND parent = 0;
-        bool vsync = false;
-        String border;
-        bool outerSize = false;
-        bool hwGamma = false;
-        int monitorIndex = -1;
-        HMONITOR hMonitor = NULL;
-
-
         if (!mIsExternal)
         {
+            if (mWindow)
+                destroy();
+
+            HINSTANCE hInst = NULL;
+            static const TCHAR staticVar;
+            GetModuleHandleEx(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS | GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT, &staticVar, &hInst);
+
+            mWindow = 0;
+            mClosed = false;        
+            mColourDepth = mIsFullScreen? 32 : GetDeviceCaps(GetDC(0), BITSPIXEL);
+            HWND parent = 0;
+            bool vsync = false;
+            String border;
+            bool outerSize = false;
+            bool hwGamma = false;
+            int monitorIndex = -1;
+            HMONITOR hMonitor = NULL;
+
             DWORD         dwStyle = WS_VISIBLE | WS_CLIPCHILDREN;
             DWORD         dwStyleEx = 0;                    
             MONITORINFOEX monitorInfoEx;
@@ -268,6 +266,15 @@ namespace Ogre {
         eglBindAPI(EGL_OPENGL_ES_API);
 
         mGLSupport->setGLDisplay(mEglDisplay);
+        int minAttribs[] = {
+                EGL_CONFIG_ID, mEglConfigId,
+                EGL_NONE
+            };
+        int maxAttribs[] = {
+                EGL_NONE
+            };
+
+        mEglConfig = mGLSupport->selectGLConfig(minAttribs, maxAttribs);
         mEglSurface = createSurfaceFromWindow(mEglDisplay, mWindow);
 
 
@@ -327,7 +334,10 @@ namespace Ogre {
 			// Notify viewports of resize
 			ViewportList::iterator it = mViewportList.begin();
 			while( it != mViewportList.end() )
-				(*it++).second->_updateDimensions();			
+				(*it++).second->_updateDimensions();
+            
+            eglSurfaceAttrib(mEglDisplay, mEglSurface, EGL_WIDTH, mWidth);
+            eglSurfaceAttrib(mEglDisplay, mEglSurface, EGL_HEIGHT, mHeight);
 		}
     }
 
@@ -412,6 +422,16 @@ namespace Ogre {
             {
                 mIsExternalGLControl = StringConverter::parseBool(opt->second);
             }
+
+            if ((opt = miscParams->find("externalWindowHandle")) != end)
+            {
+                mWindow = (HWND)StringConverter::parseSizeT(opt->second);
+                if (mWindow)
+                {
+                    mIsFullScreen = false;
+                    mIsExternal = true;
+                }
+            }
         }
 
         initNativeCreatedWindow(miscParams);
@@ -434,19 +454,16 @@ namespace Ogre {
             }
         }
 
-        mIsExternal = (mEglSurface != 0);
-
-
+        if (!mIsExternal)
+            mIsExternal = (mEglSurface != 0);
 
         if (!mEglConfig)
         {
             int minAttribs[] = {
-                EGL_LEVEL, 0,
-                EGL_DEPTH_SIZE, 16,
-                EGL_SURFACE_TYPE, EGL_WINDOW_BIT,
-                EGL_RENDERABLE_TYPE,    EGL_OPENGL_ES2_BIT,
-                EGL_NATIVE_RENDERABLE,  EGL_FALSE,
-                EGL_DEPTH_SIZE,         EGL_DONT_CARE,
+                EGL_RENDERABLE_TYPE, EGL_OPENGL_ES2_BIT,
+                EGL_BUFFER_SIZE, 32,
+                EGL_DEPTH_SIZE, 24,
+                EGL_STENCIL_SIZE, 8,
                 EGL_NONE
             };
 
@@ -471,21 +488,19 @@ namespace Ogre {
             mGLSupport->switchMode (width, height, frequency);
         }
 
-        if (!mIsExternal)
-        {
-            createNativeWindow(left, top, width, height, title);
-        }
+        int glConfigID;
+
+        mGLSupport->getGLConfigAttrib(mEglConfig, EGL_CONFIG_ID, &glConfigID);
+        LogManager::getSingleton().logMessage("EGLWindow::create used FBConfigID = " + StringConverter::toString(glConfigID));
+        mEglConfigId = glConfigID;
+
+        createNativeWindow(left, top, width, height, title);
 
         mContext = createEGLContext();
         mContext->setCurrent();
         ::EGLSurface oldDrawableDraw = eglGetCurrentSurface(EGL_DRAW);
         ::EGLSurface oldDrawableRead = eglGetCurrentSurface(EGL_READ);
         ::EGLContext oldContext  = eglGetCurrentContext();
-
-        int glConfigID;
-
-        mGLSupport->getGLConfigAttrib(mEglConfig, EGL_CONFIG_ID, &glConfigID);
-        LogManager::getSingleton().logMessage("EGLWindow::create used FBConfigID = " + StringConverter::toString(glConfigID));
 
         mName = name;
         mWidth = width;

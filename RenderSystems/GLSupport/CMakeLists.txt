@@ -84,7 +84,7 @@ file(GLOB GLSUPPORT_HEADERS "${CMAKE_CURRENT_SOURCE_DIR}/include/*.h")
 set(GLSUPPORT_HEADERS ${GLSUPPORT_HEADERS} ${CMAKE_BINARY_DIR}/include/OgreGLSupportPrerequisites.h PARENT_SCOPE)
 set(GLSUPPORT_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include/  ${CMAKE_CURRENT_SOURCE_DIR}/include/GLSL/ PARENT_SCOPE)
 
-include_directories(${NATIVE_INCLUDES} ${CMAKE_CURRENT_SOURCE_DIR}/include/ ${CMAKE_CURRENT_SOURCE_DIR}/include/GLSL/)
+include_directories(${NATIVE_INCLUDES} ${CMAKE_CURRENT_SOURCE_DIR}/include/ ${CMAKE_CURRENT_SOURCE_DIR}/include/GLSL/ ${EGL_INCLUDE_DIR})
 file(GLOB GLSL_SOURCES src/GLSL/*.cpp)
 
 if(OGRE_CONFIG_ENABLE_GL_STATE_CACHE_SUPPORT)
@@ -101,7 +101,7 @@ ogre_add_library_to_folder(RenderSystems OgreGLSupport STATIC
     src/OgreGLUniformCache.cpp
     src/OgreGLVertexArrayObject.cpp
 )
-target_link_libraries(OgreGLSupport OgreMain ${PLATFORM_LIBS})
+target_link_libraries(OgreGLSupport OgreMain ${PLATFORM_LIBS} ${EGL_LIBRARIES})
 generate_export_header(OgreGLSupport 
     EXPORT_MACRO_NAME _OgreGLExport
     EXPORT_FILE_NAME ${CMAKE_BINARY_DIR}/include/OgreGLSupportPrerequisites.h)
