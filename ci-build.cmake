@@ -37,12 +37,8 @@ elseif("$ENV{TRAVIS_OS_NAME}" STREQUAL "osx")
 endif()
 
 if(DEFINED ENV{APPVEYOR})
-    if("$ENV{APPVEYOR_BUILD_WORKER_IMAGE}" STREQUAL "Visual Studio 2017")
-        set(CMAKE_BUILD_TYPE Release)
-        set(GENERATOR -G "Visual Studio 15")
-    else()
-        set(GENERATOR -G "Visual Studio 12")
-    endif()
+    set(CMAKE_BUILD_TYPE RelWithDebInfo)
+    set(GENERATOR -G "Visual Studio 15")
     set(RENDERSYSTEMS
         -DOGRE_BUILD_RENDERSYSTEM_D3D9=TRUE
         -DOGRE_BUILD_RENDERSYSTEM_GL=TRUE
@@ -52,6 +48,10 @@ if(DEFINED ENV{APPVEYOR})
         "-DCMAKE_CXX_FLAGS=-WX -EHsc"
         -DCMAKE_GENERATOR_PLATFORM=x64
         -DOGRE_BUILD_DEPENDENCIES=TRUE
+        -DOGRE_INSTALL_PDB=TRUE
+        -DOGRE_RESOURCEMANAGER_STRICT=0
+        -DOGRE_THREAD_SUPPORT=2
+        -DOGRE_THREAD_PROVIDER=1
         -DOGRE_DEPENDENCIES_DIR=${CMAKE_CURRENT_SOURCE_DIR}/ogredeps)
 
     set(BUILD_DEPS TRUE)
@@ -85,7 +85,6 @@ if(DEFINED ENV{ANDROID})
     endif()
 endif()
 
-file(MAKE_DIRECTORY build)
 execute_process(COMMAND ${CMAKE_COMMAND}
     -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
     -DOGRE_BUILD_TESTS=ON
@@ -95,5 +94,4 @@ execute_process(COMMAND ${CMAKE_COMMAND}
     ${RENDERSYSTEMS}
     ${OTHER}
     ${GENERATOR}
-    ..
-    WORKING_DIRECTORY build)
+    .)
