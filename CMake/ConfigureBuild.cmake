@@ -148,6 +148,8 @@ if (BUILD_TYPE_LOWER STREQUAL "debug" AND WIN32)
 endif ()
 
 # Create the pkg-config package files on Unix systems
+#if (UNIX)
+
 if (UNIX)
   set(OGRE_PLUGIN_PREFIX "")
   set(OGRE_PLUGIN_EXT ".so")
@@ -156,6 +158,17 @@ if (UNIX)
     set(OGRE_PLUGIN_PREFIX "lib")
     set(OGRE_PLUGIN_EXT ".a")
   endif ()
+endif()
+
+if (WIN32)
+  set(OGRE_PLUGIN_PREFIX "")
+  set(OGRE_PLUGIN_EXT ".dll")
+  set(OGRE_PAGING_ADDITIONAL_PACKAGES "")
+  if (OGRE_STATIC)
+    set(OGRE_PLUGIN_PREFIX "lib")
+    set(OGRE_PLUGIN_EXT ".lib")
+  endif ()
+endif()
 
   set(OGRE_ADDITIONAL_LIBS "")
   set(OGRE_ADDITIONAL_INCLUDE_DIRS "")
@@ -237,7 +250,7 @@ if (UNIX)
     configure_file(${OGRE_TEMPLATES_DIR}/OGRE-HLMS.pc.in ${PROJECT_BINARY_DIR}/pkgconfig/OGRE-HLMS.pc @ONLY)
     install(FILES ${PROJECT_BINARY_DIR}/pkgconfig/OGRE-HLMS.pc DESTINATION ${OGRE_LIB_DIRECTORY}/pkgconfig)
   endif ()
-endif ()
+#endif ()
 
 if(OGRE_CONFIG_STATIC_LINK_CRT)
 #We statically link to reduce dependencies
